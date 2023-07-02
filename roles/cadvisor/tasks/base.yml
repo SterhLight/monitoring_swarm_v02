@@ -1,0 +1,32 @@
+---
+- name: Remove service
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    state: absent
+
+- name: Create a network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: overlay
+
+- name: deploy "{{ tag }}"
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    image: "{{ cadvisor_image }}:{{ cadvisor_version }}"
+    state: "{{ cadvisor_state }}"
+    networks:
+      - name: "{{ network_name }}"
+    publish:
+      - {mode: ingress, protocol: tcp, published_port: 8080, target_port: 8080}
+    replicas: "{{ max_replicas }}"
+    mounts:
+      - source: /
+        target: /rootfs:ro
+      - source: /var/run
+        target: /var/run:rw
+      - source: /sys
+        target: /sys:ro
+      - source: /var/lib/docker/
+        target: /var/lib/docker:ro
+      - source: /dev/disk/
+        target: /dev/disk:ro

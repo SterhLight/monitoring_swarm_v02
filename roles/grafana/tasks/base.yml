@@ -1,0 +1,82 @@
+---
+- name: Remove service
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    state: absent
+
+- name: Create a network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: overlay
+
+
+- name: "[{{ tag }}] Ensure folder exist"
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+
+- name: "[{{ tag }}] Upload  file"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - {src: grafana.ini, dest: "{{ monitoring_folder }}/{{ tag }}/grafana.ini", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+
+- name: Create config grafana
+  community.docker.docker_config:
+    name: "{{ item.name }}"
+    data_src: "{{ item.data_src }}"
+    state: "{{ item.state }}"
+  loop:
+    - {name: grafana.ini, data_src: "{{ monitoring_folder }}/{{ tag }}/grafana.ini", state: "{{ grafana_state }}"}
+
+- name: Create a volume
+  community.docker.docker_volume:
+    name: "{{ grafana_volumes }}"
+    state: "{{ grafana_state }}"
+
+
+- name: deploy "{{ tag }}"
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    image: "{{ grafana_image }}:{{ grafana_vercion }}"
+    state: "{{ grafana_state }}"
+    networks:
+      - name: "{{ network_name }}"
+    publish:
+      - {mode: ingress, protocol: tcp, published_port: 3000, target_port: 3000}
+    replicas: 1
+    networks:
+      - name: "{{ network_name }}"
+    mounts:
+      - source: grafana_lib
+        target: /var/lib/grafana
+        type: volume
+      - source: grafana_datasources
+        target: /etc/grafana/datasources
+        type: volume
+      - source: grafana_dashboards
+        target: /etc/grafana/dashboards
+        type: volume
+      - source: grafana_plugins
+        target: /var/lib/grafana/plugins
+        type: volume
+    configs:
+      - config_name: grafana.ini
+        filename: /etc/grafana/grafana.ini
+    placement:
+      constraints:
+        - node.labels.key1 == monitoring
+    configs:
+    - config_name: "{{ item.name }}"
+      filename: "{{ item.filename }}"
+  loop:
+    - {name: grafana.ini, filename: "/etc/grafana/grafana.ini", state: "{{ grafana_state }}"}

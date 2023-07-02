@@ -1,0 +1,59 @@
+---
+- name: Remove service
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    state: absent
+
+- name: Create a network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: overlay
+
+- name: "[{{ tag }}] Ensure folder exist"
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+
+- name: "[{{ tag }}] Upload  file"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+  loop:
+    - {src: alertmanager.yml, dest: "{{ monitoring_folder }}/{{ tag }}/alertmanager.yml", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+
+- name: Create config "{{ tag }}"
+  community.docker.docker_config:
+    name: "{{ item.name }}"
+    data_src: "{{ item.data_src }}"
+    state: "{{ item.state }}"
+  loop:
+    - {name: alertmanager.yml, data_src: "{{ monitoring_folder }}/{{ tag }}/alertmanager.yml", state: "{{ alertmanager_state }}"}
+
+- name: "deploy [{{ tag }}]"
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    image: "{{ alertmanager_image }}:{{ alertmanager_version }}"
+    state: "{{ alertmanager_state }}"
+    networks:
+      - name: "{{ network_name }}"
+    publish:
+      - {mode: ingress, protocol: tcp, published_port: 9093, target_port: 9093}
+    placement:
+      constraints:
+        - node.labels.key1 == monitoring
+    configs:
+    - config_name: "{{ item.name }}"
+      filename: "{{ item.filename }}"
+  loop:
+    - {name: alertmanager.yml, filename: "/etc/alertmanager/alertmanager.yml", state: "{{ alertmanager_state }}"}
+
+

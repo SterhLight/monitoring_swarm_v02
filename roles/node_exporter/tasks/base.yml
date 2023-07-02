@@ -1,0 +1,29 @@
+---
+- name: Remove service
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    state: absent
+
+- name: Create a network
+  community.docker.docker_network:
+    name: "{{ network_name }}"
+    driver: overlay
+
+- name: deploy "{{ tag }}"
+  become: true
+  community.docker.docker_swarm_service:
+    name: "{{ tag }}"
+    image: "{{ node_exporter_image }}:{{ node_exporter_version }}"
+    state: "{{ node_exporter_state }}"
+    networks:
+      - name: "{{ network_name }}"
+    publish:
+      - {mode: ingress, protocol: tcp, published_port: 9100, target_port: 9100}
+    replicas: "{{ max_replicas }}"
+    mounts:
+      - source: /proc
+        target: /host/proc:ro
+      - source: /sys
+        target: /host/sys:ro
+      - source: /
+        target: /rootfs:ro

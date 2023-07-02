@@ -1,0 +1,27 @@
+---
+advertise_addr        : 10.10.10.101
+ansible_user          : popytaev
+monitoring_folder     : /opt/monitoring #/home/popytaev/mont
+network_name          : monitoring_network
+max_replicas          : 5
+##############  SERVICES  #########################
+# grafana
+grafana_state         : present
+grafana_image         : grafana/grafana
+grafana_vercion       : 10.0.0-ubuntu
+# prometheus
+prometheus_state      : present
+prometheus_image      : prom/prometheus
+prometheus_version    : v2.44.0
+# alertmanager
+alertmanager_state    : present
+alertmanager_image    : prom/alertmanager
+alertmanager_version  : v0.25.0
+# cAdvisor
+cadvisor_state        : present
+cadvisor_image        : gcr.io/cadvisor/cadvisor
+cadvisor_version      : v0.33.0
+#node-exporter
+node_exporter_state   : present
+node_exporter_image   : prom/node-exporter
+node_exporter_version : v1.6.0

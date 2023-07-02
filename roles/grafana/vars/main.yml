@@ -1,0 +1,6 @@
+---
+grafana_volumes:
+  - grafana_lib
+  - grafana_datasources
+  - grafana_dashboards
+  - grafana_plugins
