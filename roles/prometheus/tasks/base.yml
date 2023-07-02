@@ -3,30 +3,35 @@
   community.docker.docker_swarm_service:
     name: "{{ tag }}"
     state: absent
+
 - name: Create a network
   community.docker.docker_network:
     name: "{{ network_name }}"
     driver: overlay
 
-- name: "[{{ tag }}] Ensure folder exist"
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: "{{ item.state }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-  loop:
-    - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+- name: configuration [{{ tag }}] preparation block
+  become: true
+  block:
+    - name: "[{{ tag }}] Ensure folder exist"
+      become: true
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
-- name: "[{{ tag }}] Upload  file"
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-  loop:
-    - {src: prometheus.yml, dest: "{{ monitoring_folder }}/{{ tag }}/prometheus.yml", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+    - name: "[{{ tag }}] Upload  file"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - {src: prometheus.yml, dest: "{{ monitoring_folder }}/{{ tag }}/prometheus.yml", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
 - name: Create config "{{ tag }}"
   community.docker.docker_config:
@@ -58,9 +63,6 @@
     placement:
       constraints:
         - node.labels.key1 == monitoring
-    depends_on:
-      - cadvisor
-      - node-exporter
     configs:
     - config_name: "{{ item.name }}"
       filename: "{{ item.filename }}"
