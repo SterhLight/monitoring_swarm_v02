@@ -9,26 +9,29 @@
     name: "{{ network_name }}"
     driver: overlay
 
+- name: configuration [{{ tag }}] preparation block
+  become: true
+  block:
+    - name: "[{{ tag }}] Ensure folder exist"
+      become: true
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
-- name: "[{{ tag }}] Ensure folder exist"
-  ansible.builtin.file:
-    path: "{{ item.path }}"
-    state: "{{ item.state }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-  loop:
-    - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
-
-- name: "[{{ tag }}] Upload  file"
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-  loop:
-    - {src: grafana.ini, dest: "{{ monitoring_folder }}/{{ tag }}/grafana.ini", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+    - name: "[{{ tag }}] Upload  file"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - {src: grafana.ini, dest: "{{ monitoring_folder }}/{{ tag }}/grafana.ini", mode: "664", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
 - name: Create config grafana
   community.docker.docker_config:
@@ -40,9 +43,9 @@
 
 - name: Create a volume
   community.docker.docker_volume:
-    name: "{{ grafana_volumes }}"
+    name: "{{ item }}"
     state: "{{ grafana_state }}"
-
+  loop: "{{ grafana_volumes }}"
 
 - name: deploy "{{ tag }}"
   community.docker.docker_swarm_service:

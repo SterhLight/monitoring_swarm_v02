@@ -1,7 +1,7 @@
 ---
 advertise_addr        : 10.10.10.101
-ansible_user          : popytaev
-monitoring_folder     : /opt/monitoring #/home/popytaev/mont
+ansible_user          : user
+monitoring_folder     : /opt/monitoring
 network_name          : monitoring_network
 max_replicas          : 5
 ##############  SERVICES  #########################
@@ -20,7 +20,7 @@ alertmanager_version  : v0.25.0
 # cAdvisor
 cadvisor_state        : present
 cadvisor_image        : gcr.io/cadvisor/cadvisor
-cadvisor_version      : v0.33.0
+cadvisor_version      : v0.46.0
 #node-exporter
 node_exporter_state   : present
 node_exporter_image   : prom/node-exporter
