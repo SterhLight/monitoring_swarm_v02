@@ -35,9 +35,9 @@ jobs:
         uses: ansible-community/ansible-lint-action@v6.0.2
         with:
           args: "ansible"
-          targets: "./*.yml"
-          override-deps: |
-            ansible-lint==6.12.2
+#          targets: "./*.yml"
+#          override-deps: |
+#            ansible-lint==6.12.2
       - name: Set up Python 3.9
         uses: actions/setup-python@v2
         with:
