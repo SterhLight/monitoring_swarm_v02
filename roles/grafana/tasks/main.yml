@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.include_tasks: base.yml
+- name: Grafana
+  ansible.builtin.include_tasks: base.yml
   tags:
     - grafana
   vars:

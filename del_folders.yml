@@ -1,0 +1,5 @@
+---
+- name: Monitoring with swarm
+  hosts: all
+  roles:
+    - {role: del_folder, tags: ["del_folder"]}

@@ -9,10 +9,10 @@
     name: "{{ network_name }}"
     driver: overlay
 
-- name: configuration [{{ tag }}] preparation block
+- name: Configuration preparation block [{{ tag }}]
   become: true
   block:
-    - name: "[{{ tag }}] Ensure folder exist"
+    - name: "Ensure folder exist [{{ tag }}]"
       become: true
       ansible.builtin.file:
         path: "{{ item.path }}"
@@ -23,7 +23,7 @@
       loop:
         - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
-    - name: "[{{ tag }}] Upload  file"
+    - name: "Upload  file [{{ tag }}]"
       ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -47,7 +47,7 @@
     state: "{{ grafana_state }}"
   loop: "{{ grafana_volumes }}"
 
-- name: deploy "{{ tag }}"
+- name: Deploy "{{ tag }}"
   community.docker.docker_swarm_service:
     name: "{{ tag }}"
     image: "{{ grafana_image }}:{{ grafana_vercion }}"
@@ -57,8 +57,6 @@
     publish:
       - {mode: ingress, protocol: tcp, published_port: 3000, target_port: 3000}
     replicas: 1
-    networks:
-      - name: "{{ network_name }}"
     mounts:
       - source: grafana_lib
         target: /var/lib/grafana
@@ -72,14 +70,11 @@
       - source: grafana_plugins
         target: /var/lib/grafana/plugins
         type: volume
-    configs:
-      - config_name: grafana.ini
-        filename: /etc/grafana/grafana.ini
     placement:
       constraints:
         - node.labels.key1 == monitoring
     configs:
-    - config_name: "{{ item.name }}"
-      filename: "{{ item.filename }}"
+      - config_name: "{{ item.name }}"
+        filename: "{{ item.filename }}"
   loop:
     - {name: grafana.ini, filename: "/etc/grafana/grafana.ini", state: "{{ grafana_state }}"}

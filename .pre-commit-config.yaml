@@ -1,0 +1,7 @@
+---
+repos:
+  - repo: https://github.com/ansible-commutity/ansible-lint.git
+    rev: v5.1.0a1
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$

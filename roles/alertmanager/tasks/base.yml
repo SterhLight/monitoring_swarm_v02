@@ -9,10 +9,10 @@
     name: "{{ network_name }}"
     driver: overlay
 
-- name: configuration [{{ tag }}] preparation block
+- name: Configuration preparation block [{{ tag }}]
   become: true
   block:
-    - name: "[{{ tag }}] Ensure folder exist"
+    - name: "Ensure folder exist [{{ tag }}]"
       ansible.builtin.file:
         path: "{{ item.path }}"
         state: "{{ item.state }}"
@@ -22,7 +22,7 @@
       loop:
         - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
-    - name: "[{{ tag }}] Upload  file"
+    - name: "Upload  file [{{ tag }}]"
       ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -40,7 +40,7 @@
   loop:
     - {name: alertmanager.yml, data_src: "{{ monitoring_folder }}/{{ tag }}/alertmanager.yml", state: "{{ alertmanager_state }}"}
 
-- name: "deploy [{{ tag }}]"
+- name: "Deploy [{{ tag }}]"
   community.docker.docker_swarm_service:
     name: "{{ tag }}"
     image: "{{ alertmanager_image }}:{{ alertmanager_version }}"
@@ -53,7 +53,7 @@
       constraints:
         - node.labels.key1 == monitoring
     configs:
-    - config_name: "{{ item.name }}"
-      filename: "{{ item.filename }}"
+      - config_name: "{{ item.name }}"
+        filename: "{{ item.filename }}"
   loop:
     - {name: alertmanager.yml, filename: "/etc/alertmanager/alertmanager.yml", state: "{{ alertmanager_state }}"}

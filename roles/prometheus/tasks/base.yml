@@ -9,10 +9,10 @@
     name: "{{ network_name }}"
     driver: overlay
 
-- name: configuration [{{ tag }}] preparation block
+- name: Configuration preparation block [{{ tag }}]
   become: true
   block:
-    - name: "[{{ tag }}] Ensure folder exist"
+    - name: "Ensure folder exist [{{ tag }}]"
       become: true
       ansible.builtin.file:
         path: "{{ item.path }}"
@@ -23,7 +23,7 @@
       loop:
         - {path: "{{ monitoring_folder }}/{{ tag }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
 
-    - name: "[{{ tag }}] Upload  file"
+    - name: "Upload  file [{{ tag }}]"
       ansible.builtin.copy:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
@@ -46,7 +46,7 @@
     name: prometheus_data
     state: "{{ prometheus_state }}"
 
-- name: deploy "{{ tag }}"
+- name: Deploy "{{ tag }}"
   community.docker.docker_swarm_service:
     name: "{{ tag }}"
     image: "{{ prometheus_image }}:{{ prometheus_version }}"
@@ -64,7 +64,7 @@
       constraints:
         - node.labels.key1 == monitoring
     configs:
-    - config_name: "{{ item.name }}"
-      filename: "{{ item.filename }}"
+      - config_name: "{{ item.name }}"
+        filename: "{{ item.filename }}"
   loop:
     - {name: prometheus.yml, filename: "/etc/prometheus/prometheus.yml", state: "{{ prometheus_state }}"}

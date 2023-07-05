@@ -17,4 +17,3 @@ all:
           ansible_host: 10.10.10.104
         server5:
           ansible_host: 10.10.10.105
-
