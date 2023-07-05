@@ -22,7 +22,10 @@ jobs:
           yamllint_file_or_dir: './.yamllint'
           yamllint_strict: false
           yamllint_comment: true
-
+      - name: 'Ansible-lint'
+        uses: ansible/ansible-lint-action@main
+        #with:
+        #  path: "playbooks/"
 #jobs:
 #  lint:
 #    runs-on: ubuntu-latest
