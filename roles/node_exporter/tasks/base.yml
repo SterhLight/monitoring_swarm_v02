@@ -9,7 +9,7 @@
     name: "{{ network_name }}"
     driver: overlay
 
-- name: deploy "{{ tag }}"
+- name: Deploy "{{ tag }}"
   community.docker.docker_swarm_service:
     name: "{{ tag }}"
     image: "{{ node_exporter_image }}:{{ node_exporter_version }}"

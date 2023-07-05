@@ -1,16 +1,7 @@
 ---
-- name: Creates directory
+- name: Recursively remove directorys
   become: true
-  file:
-    path: /opt/monitoring/"{{ item }}"
-    state: directory
-    mode: 0777
+  ansible.builtin.file:
+    path: "{{ monitoring_folder }}/{{ item }}"
+    state: absent
   loop: "{{ folders }}"
-#  loop:
-#    - grafana
-#    - prometheus
-#    - alertmanager
-#    - cadvisor
-#    - node_exporter
-
-

@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.include_tasks: base.yml
+- name: Prometheus
+  ansible.builtin.include_tasks: base.yml
   tags:
     - prometheus
   vars:

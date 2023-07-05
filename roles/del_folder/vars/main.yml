@@ -1,0 +1,7 @@
+---
+folders:
+  - grafana
+  - prometheus
+  - alertmanager
+  - cadvisor
+  - node_exporter

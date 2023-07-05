@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.include_tasks: base.yml
+- name: Node-exporter
+  ansible.builtin.include_tasks: base.yml
   tags:
     - node-exporter
   vars:

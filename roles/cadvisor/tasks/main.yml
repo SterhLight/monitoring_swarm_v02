@@ -1,5 +1,6 @@
 ---
-- ansible.builtin.include_tasks: base.yml
+- name: Cadvisor
+  ansible.builtin.include_tasks: base.yml
   tags:
     - cadvisor
   vars:

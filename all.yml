@@ -1,5 +1,5 @@
 ---
-- name: monitoring with swarm
+- name: Monitoring with swarm
   hosts: deploy
   roles:
     - {role: add_labels, tags: ["add_labels"]}
