@@ -1,4 +1,5 @@
 # МОНИТОРИНГ СТЕКА СЕРВЕРОВ НА SWARM
+[![GitHub-Actions-lint](https://github.com/SterhLight/monitoring_swarm_v02/actions/workflows/blank.yml/badge.svg)](https://github.com/SterhLight/monitoring_swarm_v02/actions/workflows/blank.yml)
 ## ЗАПУСК
 ### Редактирование файла инвенторизации
 Требуется заменить в inventory.yml IP-адреса на актуальные
