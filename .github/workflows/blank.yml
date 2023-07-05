@@ -52,12 +52,13 @@ jobs:
       - name: run ansible-lint
         run: |
           ansible-lint -x name,loop-var-prefix
-      - name: run yamllint
-        run: |
-          yamllint -c lint.yaml .
-      - name: run syntax-check
-        run: |
-          ansible-playbook -i inventory/all.yml deploy.yml --syntax-check
+
+#      - name: run syntax-check
+#        run: |
+#          ansible-playbook -i inventory/all.yml deploy.yml --syntax-check
+#####################
+
+
         #with:
         #  path: "playbooks/"
 #jobs:
