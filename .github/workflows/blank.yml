@@ -1,0 +1,24 @@
+---
+name: GitHub-Actions-lint
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run a one-line script
+        uses: actions/checkout@v3
+
+      - name: Run the ansible-lint
+        uses: ansible-community/ansible-lint-action@v6.0.2
+
+      - name: Run the yamllint
+        uses: karancode/yamllint-github-action@master
