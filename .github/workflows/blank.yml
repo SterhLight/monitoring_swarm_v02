@@ -3,9 +3,9 @@ name: GitHub-Actions-lint
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master, dev ]
 
   workflow_dispatch:
 
@@ -26,7 +26,7 @@ jobs:
           yamllint_comment: true
 
       - name: 'Ansible-lint'
-        uses: ansible-community/ansible-lint-action@v6.16.1
-        with:
-          targets: "./*.yml"
+        uses: ansible-community/ansible-lint-action@v6.0.2
+#        with:
+#          targets: "./*.yml"
 #          args: "ansible"
