@@ -1,0 +1,6 @@
+exclude_paths:
+  - .github/
+  - .ansible-lint
+  - group_vars/all/vars.yml
+warn_list:
+  - name[template] 

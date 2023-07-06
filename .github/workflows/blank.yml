@@ -47,30 +47,4 @@ jobs:
       
 #          override-deps: |
 #            ansible-lint==6.12.2
- 
-#####################
 
-
-        #with:
-        #  path: "playbooks/"
-#jobs:
-#  lint:
-#    runs-on: ubuntu-latest
-
-#    steps:
-#      - name: Run a one-line script
-#        uses: actions/checkout@v3
-
-#      - name: Install the ansible-lint
-#        run: apt-get install ansible-lint
-
-#      - name: Install the yamllint
-#        run: apt-get install yamllint
-
-#      - name: Run the ansible-lint
-#        run: ansible-lint
-#        uses: ansible-community/ansible-lint-action@v6.0.2
-
-#      - name: Run the yamllint
-#        run: yamllint
-#        uses: karancode/yamllint-github-action@master
