@@ -26,25 +26,7 @@ jobs:
           yamllint_comment: true
 
       - name: 'Ansible-lint'
-        uses: ansible/ansible-lint-action@v6.0.2
+        uses: ansible-community/ansible-lint-action@v6.0.2
         with:
           targets: "./*.yml"
-          args: "ansible"
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-      - name: Install dependencies Including Ansible
-        run: |
-          python -m pip install --upgrade pip
-          pip install --no-cache-dir --upgrade pip && \
-          pip install --no-cache-dir ansible==6.3.0 && \
-          pip install --no-cache-dir yamllint==1.28.0 && \
-          pip install --no-cache-dir ansible-lint==6.9.1
-      - name: run ansible-lint
-        run: |
-          ansible-lint -c ../../.ansible-lint
-      
-#          override-deps: |
-#            ansible-lint==6.12.2
-
+#          args: "ansible"
