@@ -2,5 +2,6 @@ exclude_paths:
   - .github/
   - .ansible-lint
   - group_vars/all/vars.yml
+  - roles/add_labels/
 warn_list:
   - name[template] 
