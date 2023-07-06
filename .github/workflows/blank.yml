@@ -26,7 +26,7 @@ jobs:
           yamllint_comment: true
 
       - name: 'Ansible-lint'
-        uses: ansible-community/ansible-lint-action@v6.0.2
+        uses: ansible-community/ansible-lint-action@master
 #        with:
 #          targets: "./*.yml"
 #          args: "ansible"
