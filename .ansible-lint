@@ -3,5 +3,7 @@ exclude_paths:
   - .ansible-lint
   - group_vars/all/vars.yml
   - roles/add_labels/
+  - roles/backup/
+  - roles/recovery/
 warn_list:
   - name[template] 
