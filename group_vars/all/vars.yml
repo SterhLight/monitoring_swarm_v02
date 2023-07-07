@@ -1,9 +1,13 @@
 ---
 advertise_addr        : 10.10.10.101
-ansible_user          : user
+ansible_user          : popytaev #user
 monitoring_folder     : /opt/monitoring
 network_name          : monitoring_network
 max_replicas          : 5
+############ BACKUP/RECOVERY #####################
+backup_src_folder     : /var/lib/docker/volumes/
+backup_dst_folder     : /backup
+bp_server             : server1
 ##############  SERVICES  #########################
 # grafana
 grafana_state         : present
