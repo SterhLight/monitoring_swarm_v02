@@ -1,0 +1,18 @@
+---
+- name: Remote old file
+  become: true
+  ansible.builtin.file:
+    path: /tmp/backup.tgz
+    state: absent
+
+- name: Copy backup file backup.tgz
+  ansible.builtin.copy:
+    src: "{{ backup_dst_folder }}/{{ bp_folder }}/{{ bp_server }}/tmp/backup.tgz"
+    dest: /tmp/
+
+- name: Extract backup.tgz into [{{ backup_src_folder }}]
+  become: true
+  ansible.builtin.unarchive:
+    src: /tmp/backup.tgz
+    dest: "{{ backup_src_folder }}"
+    remote_src: true

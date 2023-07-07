@@ -2,9 +2,12 @@
 - name: Monitoring with swarm
   hosts: deploy
   roles:
-    - {role: add_labels, tags: ["add_labels"]}
-    - {role: cadvisor, tags: ["cadvisor"]}
-    - {role: node_exporter, tags: ["node_exporter"]}
-    - {role: prometheus, tags: ["prometheus"]}
-    - {role: alertmanager, tags: ["alertmanager"]}
-    - {role: grafana, tags: ["grafana"]}
+    - {role: add_labels, tags: ["add_labels,deploy"]}
+    - {role: cadvisor, tags: ["cadvisor,deploy"]}
+    - {role: node_exporter, tags: ["node_exporter,deploy"]}
+    - {role: prometheus, tags: ["prometheus,deploy"]}
+    - {role: alertmanager, tags: ["alertmanager,deploy"]}
+    - {role: grafana, tags: ["grafana,deploy"]}
+    - {role: backup, tags: ["backup"]}
+    - {role: recovery, tags: ["recovery"]}
+    - {role: del_folder, tags: ["del_folder"]}

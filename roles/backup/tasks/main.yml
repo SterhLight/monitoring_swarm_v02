@@ -1,0 +1,36 @@
+---
+- name: Work with the archive
+  block:
+    - name: Remote old file
+      ansible.builtin.file:
+        path: /tmp/backup.tgz
+        state: absent
+
+    - name: Compress directory /home/sterh/test01/ into /tmp/backup.tgz
+      community.general.archive:
+        path: "{{ backup_src_folder }}"
+        dest: /tmp/backup.tgz
+  become: true
+ 
+- name: Localhost
+  block:
+    - name: Set timesamp of the backup
+      ansible.builtin.set_fact:
+        now: "{{ lookup('pipe', 'date +%F-%T') }}"
+ 
+    - name: Create a backup directory
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "{{ item.mode }}"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - {path: "/backup/{{ now }}", state: directory, mode: "775", owner: "{{ ansible_user }}", group: "{{ ansible_user }}"}
+  become: true
+  delegate_to: localhost
+ 
+- name: Store file into [{{ backup_dst_folder }}/{{ now }}]
+  ansible.builtin.fetch:
+    src: "/tmp/backup.tgz"
+    dest: "{{ backup_dst_folder }}/{{ now }}"
