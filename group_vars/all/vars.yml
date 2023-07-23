@@ -1,6 +1,6 @@
 ---
 advertise_addr        : 10.10.10.101
-ansible_user          : popytaev #user
+ansible_user          : user
 monitoring_folder     : /opt/monitoring
 network_name          : monitoring_network
 max_replicas          : 5
