@@ -6,7 +6,7 @@
         path: /tmp/backup.tgz
         state: absent
 
-    - name: Compress directory /home/sterh/test01/ into /tmp/backup.tgz
+    - name: Compress directory "{{ backup_src_folder }}" into /tmp/backup.tgz
       community.general.archive:
         path: "{{ backup_src_folder }}"
         dest: /tmp/backup.tgz
